@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:catfact/service/api_service.dart';
@@ -13,7 +14,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String url = "https://cataas.com/cat";
-
+  bool val = false;
+  double val2 = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +35,44 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 30,),
                     Text(snapshot.data[index].text),
                     const SizedBox(height: 40,),
-                    Image.network(url,height: 200,),
+                  //  Container(child: Image.network(url),height: 200,),
+                    const SizedBox(height: 60,),
+                    AnimatedContainer(
+                      onEnd: () {
+                        setState(() {
+                          if(val == false) {
+                            val = true;
+                          }
+                          if(val == true) {
+                            val = false;
+                          }
+                        });
+                      },
+                      duration: Duration(seconds: 1),
+                      height:  val ? 200 : 300,
+                      width:  val ? 200 : 300,
+                      transformAlignment: Alignment.center,
+                      transform: Matrix4.rotationZ(val ? pi : pi),
+                      child: Image.network(url),
+                    ),
                     const SizedBox(height: 60,),
                     TextButton(
                         onPressed: () {
                           setState(() {
+                            val = !val;
                             url = url.split('?r')[0] + '?r=' + DateTime.now().millisecondsSinceEpoch.toString();
                             snapshot.data.shuffle();
                           });
                         },
                         child: const Text("Another fact!",style: TextStyle(fontSize: 20),),
-                    )
+                    ),
+                    // TextButton(onPressed: () {
+                    //   setState(() {
+                    //     val = !val;
+                    //   });
+                    // },
+                    //     child: Text("text")
+                    // )
                   ],
                 );
               }
